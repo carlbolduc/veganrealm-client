@@ -1,10 +1,8 @@
 var recipes = {}
 
-function search() {
-    var currentResults = document.getElementsByClassName('result');
-    while (currentResults[0]) {
-        currentResults[0].parentNode.removeChild(currentResults[0]);
-    }
+function fetchResults() {
+    cleanResults();
+    cleanPager();
     var keyword = document.getElementById('keyword').value;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://localhost:8080/recipes/' + keyword);
@@ -33,30 +31,35 @@ function search() {
 function handle(e) {
     if (e.keyCode === 13) {
         e.preventDefault();
-        search();
+        fetchResults();
     }
 }
 
 function loadRecipe(recipe) {
-    var recipeElement = document.createElement('div');
+    var recipeElement = document.createElement('article');
     recipeElement.setAttribute('class', 'result');
-    var title = document.createElement('h1');
+    var title = document.createElement('h2');
     var link = document.createElement('a');
     link.setAttribute('href', recipe.link);
     link.textContent = recipe.title;
     title.appendChild(link);
+    var imageContainer = document.createElement('div');
+    imageContainer.setAttribute('class', 'image');
     var image = document.createElement('img');
     image.src = recipe.imageLink;
-    image.style.width = '400px';
+    imageContainer.appendChild(image);
+    var ingredientsContainer = document.createElement('div');
+    ingredientsContainer.setAttribute('class', 'ingredients');
     var ingredients = document.createElement('ul');
     for (var ingredient_i = 0; ingredient_i < recipe.ingredients.length; ingredient_i++) {
         var ingredient = document.createElement('li');
         ingredient.textContent = recipe.ingredients[ingredient_i];
         ingredients.appendChild(ingredient);
     }
+    ingredientsContainer.appendChild(ingredients);
     recipeElement.appendChild(title);
-    recipeElement.appendChild(image);
-    recipeElement.appendChild(ingredients);
+    recipeElement.appendChild(imageContainer);
+    recipeElement.appendChild(ingredientsContainer);
     document.getElementById('results').appendChild(recipeElement);
 }
 
@@ -64,22 +67,20 @@ function createPager() {
     var pages = Math.ceil(recipes.length / 10);
     for (var page_i = 0; page_i < pages; page_i++) {
         var pageElement = document.createElement('a');
+        pageElement.setAttribute('class', 'page');
         pageElement.setAttribute('href', '#');
         pageElement.setAttribute('onclick', `goToPage(${page_i})`);
-        if (page_i !== pages - 1) {
-            pageElement.textContent = (page_i + 1) + ' - ';
-        } else {
-            pageElement.textContent = page_i + 1;
-        }
+        pageElement.textContent = page_i + 1;
         document.getElementById('pager').appendChild(pageElement);
+        if (page_i !== pages - 1) {
+            var pager = document.getElementById('pager');
+            pager.innerHTML = pager.innerHTML + ' / ';
+        }
     }
 }
 
 function goToPage(page) {
-    var currentResults = document.getElementsByClassName('result');
-    while (currentResults[0]) {
-        currentResults[0].parentNode.removeChild(currentResults[0]);
-    }
+    cleanResults();
     var firstResult = page * 10;
     if ((page * 10) + 10 > recipes.length) {
         for (var recipe_i = firstResult; recipe_i < recipes.length; recipe_i++) {
@@ -90,4 +91,20 @@ function goToPage(page) {
             loadRecipe(recipes[recipe_i]);
         }
     }
+}
+
+function cleanResults() {
+    var currentResults = document.getElementsByClassName('result');
+    while (currentResults[0]) {
+        currentResults[0].parentNode.removeChild(currentResults[0]);
+    }
+}
+
+function cleanPager() {
+    var currentPages = document.getElementsByClassName('page');
+    while (currentPages[0]) {
+        currentPages[0].parentNode.removeChild(currentPages[0]);
+    }
+    var pager = document.getElementById('pager');
+    pager.innerHTML = '';
 }

@@ -2,14 +2,20 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     <title>Vegan Realm</title>
     <script src="js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
 <body>
 
-    <input type='text' id='keyword' onkeypress="handle(event)" />
-    <input id="search-button" type="button" value="Search" onclick="search();" />
+    <h1>Vegan Realm</h1>
+
+    <form id="search">
+        <input type='text' id='keyword' onkeypress="handle(event)" />
+        <input id="search-button" value="Search The Realm" type="submit" onclick="fetchResults();">
+    </form>
 
     <div id="results">
 
