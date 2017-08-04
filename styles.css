@@ -112,23 +112,23 @@ footer {
 #keyword {
     width: 60%;
     font-size: 1.5em;
-    margin: 20px 20% 0 20%;
+    margin: 20px 20% 20px 20%;
 }
 
 #search-button {
     background-color: #f2f2f2;
-    border: 1px solid #f2f2f2;
     border-radius: 2px;
     color: #757575;
     cursor: default;
     font-size: 13px;
     font-weight: bold;
-    margin: 11px 4px;
+    margin: 0;
     min-width: 54px;
-    padding: 0 16px;
+    padding: 10px;
     text-align: center;
-    height: 36px;
     line-height: 27px;
+    display: inline-block;
+    border: 1px solid #EDEEEE;
 }
 
 #results {

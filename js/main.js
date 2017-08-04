@@ -5,7 +5,7 @@ function fetchResults() {
     cleanPager();
     var keyword = document.getElementById('keyword').value;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:8080/recipes/' + keyword);
+    xhr.open('GET', 'http://veganrealm.net:8080/recipes/' + keyword);
     xhr.onload = function () {
         if (xhr.status === 200) {
             var results = document.getElementById('results');
