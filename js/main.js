@@ -43,6 +43,8 @@ function loadRecipe(recipe) {
     link.setAttribute('href', recipe.link);
     link.textContent = recipe.title;
     title.appendChild(link);
+    var author = document.createElement('h3');
+    author.textContent = recipe.author;
     var imageContainer = document.createElement('div');
     imageContainer.setAttribute('class', 'image');
     var image = document.createElement('img');
@@ -58,6 +60,7 @@ function loadRecipe(recipe) {
     }
     ingredientsContainer.appendChild(ingredients);
     recipeElement.appendChild(title);
+    recipeElement.appendChild(author);
     recipeElement.appendChild(imageContainer);
     recipeElement.appendChild(ingredientsContainer);
     document.getElementById('results').appendChild(recipeElement);
