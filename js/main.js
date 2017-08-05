@@ -111,3 +111,19 @@ function cleanPager() {
     var pager = document.getElementById('pager');
     pager.innerHTML = '';
 }
+
+window.onload = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://veganrealm.net:8080/statistics/recipes-count');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var recipesCountElement = document.getElementById('recipes-count');
+            var recipesCount = JSON.parse(xhr.responseText);
+            recipesCountElement.textContent = recipesCount;
+        }
+        else {
+            alert('Request failed.  Returned status of ' + xhr.status);
+        }
+    };
+    xhr.send();
+};

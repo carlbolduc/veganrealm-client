@@ -90,16 +90,20 @@ h3 {
     padding: 5px 0;
 }
 
+p {
+    padding: 5px 0;
+}
+
 main {
     margin: 0 auto;
     width: 80%;
 }
 
 footer {
-    margin: 2em 0;
+    margin: 2em auto;
     text-align: center;
     font-size: .8em;
-    font-weight: 600;
+    width: 80%;
 }
 
 #search {
@@ -179,6 +183,10 @@ ul li:before{ content:"- ";}
 
 .text {
     line-height: 1.5;
+}
+
+#recipes-count {
+    font-weight: bold;
 }
 
 #pager {
