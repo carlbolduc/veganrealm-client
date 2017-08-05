@@ -52,13 +52,21 @@ function loadRecipe(recipe) {
     imageContainer.appendChild(image);
     var ingredientsContainer = document.createElement('div');
     ingredientsContainer.setAttribute('class', 'ingredients');
-    var ingredients = document.createElement('ul');
-    for (var ingredient_i = 0; ingredient_i < recipe.ingredients.length; ingredient_i++) {
-        var ingredient = document.createElement('li');
-        ingredient.textContent = recipe.ingredients[ingredient_i];
-        ingredients.appendChild(ingredient);
+    if (recipe.ingredients.length > 0) {
+        if (recipe.ingredients.length === 1 && recipe.ingredients[0] === "") {
+            ingredientsContainer.textContent = "See ingredients in the original recipe.";
+        } else {
+            var ingredients = document.createElement('ul');
+            for (var ingredient_i = 0; ingredient_i < recipe.ingredients.length; ingredient_i++) {
+                var ingredient = document.createElement('li');
+                ingredient.textContent = recipe.ingredients[ingredient_i];
+                ingredients.appendChild(ingredient);
+            }
+            ingredientsContainer.appendChild(ingredients);
+        }
+    } else {
+        ingredientsContainer.textContent = "See ingredients in the original recipe.";
     }
-    ingredientsContainer.appendChild(ingredients);
     recipeElement.appendChild(title);
     recipeElement.appendChild(author);
     recipeElement.appendChild(imageContainer);
