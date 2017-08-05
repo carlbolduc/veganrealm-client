@@ -41,10 +41,10 @@ function loadRecipe(recipe) {
     var title = document.createElement('h2');
     var link = document.createElement('a');
     link.setAttribute('href', recipe.link);
-    link.textContent = recipe.title;
+    link.innerHTML = recipe.title;
     title.appendChild(link);
     var author = document.createElement('h3');
-    author.textContent = recipe.author;
+    author.innerHTML = recipe.author;
     var imageContainer = document.createElement('div');
     imageContainer.setAttribute('class', 'image');
     var image = document.createElement('img');
@@ -54,18 +54,18 @@ function loadRecipe(recipe) {
     ingredientsContainer.setAttribute('class', 'ingredients');
     if (recipe.ingredients.length > 0) {
         if (recipe.ingredients.length === 1 && recipe.ingredients[0] === "") {
-            ingredientsContainer.textContent = "See ingredients in the original recipe.";
+            ingredientsContainer.innerHTML = "See ingredients in the original recipe.";
         } else {
             var ingredients = document.createElement('ul');
             for (var ingredient_i = 0; ingredient_i < recipe.ingredients.length; ingredient_i++) {
                 var ingredient = document.createElement('li');
-                ingredient.textContent = recipe.ingredients[ingredient_i];
+                ingredient.innerHTML = recipe.ingredients[ingredient_i];
                 ingredients.appendChild(ingredient);
             }
             ingredientsContainer.appendChild(ingredients);
         }
     } else {
-        ingredientsContainer.textContent = "See ingredients in the original recipe.";
+        ingredientsContainer.innerHTML = "See ingredients in the original recipe.";
     }
     recipeElement.appendChild(title);
     recipeElement.appendChild(author);
@@ -81,7 +81,7 @@ function createPager() {
         pageElement.setAttribute('class', 'page');
         pageElement.setAttribute('href', '#');
         pageElement.setAttribute('onclick', `goToPage(${page_i})`);
-        pageElement.textContent = page_i + 1;
+        pageElement.innerHTML = page_i + 1;
         document.getElementById('pager').appendChild(pageElement);
         if (page_i !== pages - 1) {
             var pager = document.getElementById('pager');
@@ -127,7 +127,7 @@ window.onload = function() {
         if (xhr.status === 200) {
             var recipesCountElement = document.getElementById('recipes-count');
             var recipesCount = JSON.parse(xhr.responseText);
-            recipesCountElement.textContent = recipesCount;
+            recipesCountElement.innerHTML = recipesCount;
         }
         else {
             alert('Request failed.  Returned status of ' + xhr.status);
