@@ -11,11 +11,11 @@
 
 <body>
 
-    <h1>Vegan Realm</h1>
+    <h1><a href="index.html">Vegan Realm</a></h1>
 
     <form id="search">
         <input type='text' id='keyword' onkeypress="handle(event)" />
-        <input id="search-button" value="Search The Realm" type="submit" onclick="fetchResults();">
+        <a id="search-button" hreaf="#" onclick="fetchResults();">Search The Realm</a>
     </form>
 
     <div id="results">
@@ -27,7 +27,8 @@
     </div>
     
     <footer>
-            <p>Your friendly vegan resources search engine, cruelty free and full of goodies. <a href="about.html">Learn More</a>.</p>
+        <p>Your friendly vegan resources search engine, cruelty free and full of goodies. <a href="about.html">Learn More</a>.</p>
+        <p>Currently serving <span id="recipes-count"></span> recipes.</p>
     </footer>
 
     <script>

@@ -5,7 +5,7 @@ function fetchResults() {
     cleanPager();
     var keyword = document.getElementById('keyword').value;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:8080/recipes/' + keyword);
+    xhr.open('GET', 'http://veganrealm.net:8080/recipes/' + keyword);
     xhr.onload = function () {
         if (xhr.status === 200) {
             var results = document.getElementById('results');
@@ -41,8 +41,10 @@ function loadRecipe(recipe) {
     var title = document.createElement('h2');
     var link = document.createElement('a');
     link.setAttribute('href', recipe.link);
-    link.textContent = recipe.title;
+    link.innerHTML = recipe.title;
     title.appendChild(link);
+    var author = document.createElement('h3');
+    author.innerHTML = recipe.author;
     var imageContainer = document.createElement('div');
     imageContainer.setAttribute('class', 'image');
     var image = document.createElement('img');
@@ -50,14 +52,23 @@ function loadRecipe(recipe) {
     imageContainer.appendChild(image);
     var ingredientsContainer = document.createElement('div');
     ingredientsContainer.setAttribute('class', 'ingredients');
-    var ingredients = document.createElement('ul');
-    for (var ingredient_i = 0; ingredient_i < recipe.ingredients.length; ingredient_i++) {
-        var ingredient = document.createElement('li');
-        ingredient.textContent = recipe.ingredients[ingredient_i];
-        ingredients.appendChild(ingredient);
+    if (recipe.ingredients.length > 0) {
+        if (recipe.ingredients.length === 1 && recipe.ingredients[0] === "") {
+            ingredientsContainer.innerHTML = "See ingredients in the original recipe.";
+        } else {
+            var ingredients = document.createElement('ul');
+            for (var ingredient_i = 0; ingredient_i < recipe.ingredients.length; ingredient_i++) {
+                var ingredient = document.createElement('li');
+                ingredient.innerHTML = recipe.ingredients[ingredient_i];
+                ingredients.appendChild(ingredient);
+            }
+            ingredientsContainer.appendChild(ingredients);
+        }
+    } else {
+        ingredientsContainer.innerHTML = "See ingredients in the original recipe.";
     }
-    ingredientsContainer.appendChild(ingredients);
     recipeElement.appendChild(title);
+    recipeElement.appendChild(author);
     recipeElement.appendChild(imageContainer);
     recipeElement.appendChild(ingredientsContainer);
     document.getElementById('results').appendChild(recipeElement);
@@ -70,7 +81,7 @@ function createPager() {
         pageElement.setAttribute('class', 'page');
         pageElement.setAttribute('href', '#');
         pageElement.setAttribute('onclick', `goToPage(${page_i})`);
-        pageElement.textContent = page_i + 1;
+        pageElement.innerHTML = page_i + 1;
         document.getElementById('pager').appendChild(pageElement);
         if (page_i !== pages - 1) {
             var pager = document.getElementById('pager');
@@ -108,3 +119,19 @@ function cleanPager() {
     var pager = document.getElementById('pager');
     pager.innerHTML = '';
 }
+
+window.onload = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://veganrealm.net:8080/statistics/recipes-count');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var recipesCountElement = document.getElementById('recipes-count');
+            var recipesCount = JSON.parse(xhr.responseText);
+            recipesCountElement.innerHTML = recipesCount;
+        }
+        else {
+            alert('Request failed.  Returned status of ' + xhr.status);
+        }
+    };
+    xhr.send();
+};
