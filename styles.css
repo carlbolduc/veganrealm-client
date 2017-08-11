@@ -194,7 +194,7 @@ ul li:before{ content:"- ";}
     font-size: 1.5em;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) and (orientation: portrait) {
     #keyword {
         margin: 20px 10%;
     }
