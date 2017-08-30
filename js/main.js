@@ -1,14 +1,24 @@
 var recipes = {}
 
-function fetchResults() {
+function actionHome() {
+    document.getElementById('keyword').value = '';
     cleanResults();
     cleanPager();
+}
+
+function actionSearch() {
     var keyword = document.getElementById('keyword').value;
+    history.pushState({'action': 'search', 'keyword': keyword}, '', '');
+    fetchResults(keyword);
+}
+
+function fetchResults(keyword) {
+    cleanResults();
+    cleanPager();
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://veganrealm.net:8080/recipes/' + keyword);
     xhr.onload = function () {
         if (xhr.status === 200) {
-            var results = document.getElementById('results');
             recipes = JSON.parse(xhr.responseText);
             if (recipes.length > 10) {
                 createPager();
@@ -31,7 +41,7 @@ function fetchResults() {
 function handle(e) {
     if (e.keyCode === 13) {
         e.preventDefault();
-        fetchResults();
+        actionSearch();
     }
 }
 
@@ -80,11 +90,11 @@ function createPager() {
         var pageElement = document.createElement('a');
         pageElement.setAttribute('class', 'page');
         pageElement.setAttribute('href', '#');
-        pageElement.setAttribute('onclick', `goToPage(${page_i})`);
+        pageElement.setAttribute('onclick', 'goToPage(' + page_i + ')');
         pageElement.innerHTML = page_i + 1;
         document.getElementById('pager').appendChild(pageElement);
         if (page_i !== pages - 1) {
-            var pager = document.getElementById('pager');
+            const pager = document.getElementById('pager');
             pager.innerHTML = pager.innerHTML + ' / ';
         }
     }
@@ -121,13 +131,13 @@ function cleanPager() {
 }
 
 window.onload = function() {
+    history.pushState({'action': 'home'}, '', '');
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://veganrealm.net:8080/statistics/recipes-count');
     xhr.onload = function () {
         if (xhr.status === 200) {
             var recipesCountElement = document.getElementById('recipes-count');
-            var recipesCount = JSON.parse(xhr.responseText);
-            recipesCountElement.innerHTML = recipesCount;
+            recipesCountElement.innerHTML = JSON.parse(xhr.responseText);
         }
         else {
             alert('Request failed.  Returned status of ' + xhr.status);
@@ -135,3 +145,17 @@ window.onload = function() {
     };
     xhr.send();
 };
+
+window.addEventListener("popstate", function(e) {
+
+    if (e.state !== null) {
+        if (e.state.action === 'search') {
+            document.getElementById('keyword').value = e.state.keyword;
+            fetchResults(e.state.keyword)
+        } else if (e.state.action === 'home') {
+            actionHome();
+        }
+    }
+
+
+});
