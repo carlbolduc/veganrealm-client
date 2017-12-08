@@ -66,9 +66,9 @@ function loadRecipe(recipe) {
     title.appendChild(link);
 
     var publishedAt = new Date(recipe.publishedAt);
-    var publishedOn = 'Published on ' + publishedAt.getMonthText() + " " + publishedAt.getDate() + " " + publishedAt.getFullYear();
+    var publishedOn = publishedAt.getMonthText() + ' ' + publishedAt.getDate() + ', ' + publishedAt.getFullYear();
     var author = document.createElement('h3');
-    author.innerHTML = publishedOn + " by <strong>" + recipe.author + "</strong>";
+    author.innerHTML = 'Published by <strong>' + recipe.author + '</strong> on ' + publishedOn;
 
     var imageContainer = document.createElement('div');
     imageContainer.setAttribute('class', 'image');
