@@ -1,8 +1,9 @@
-var recipes = {}
+var recipes = {};
 
 function actionHome() {
     document.getElementById('keyword').value = '';
-    cleanResults();
+    cleanElementByClassName('result');
+    cleanElementByClassName('message');
     cleanPager();
 }
 
@@ -13,14 +14,17 @@ function actionSearch() {
 }
 
 function fetchResults(keyword) {
-    cleanResults();
+    cleanElementByClassName('result');
+    cleanElementByClassName('message');
     cleanPager();
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://veganrealm.net:8080/recipes/' + keyword);
+    xhr.open('GET', 'http://localhost:8080/recipes/' + keyword);
     xhr.onload = function () {
         if (xhr.status === 200) {
             recipes = JSON.parse(xhr.responseText);
-            if (recipes.length > 10) {
+            if (recipes.length === 0) {
+                displayNoResultsMessage(keyword);
+            } else if (recipes.length > 10) {
                 createPager();
                 for (var recipe_i = 0; recipe_i < 10; recipe_i++) {
                     loadRecipe(recipes[recipe_i]);
@@ -45,6 +49,13 @@ function handle(e) {
     }
 }
 
+function displayNoResultsMessage(keyword) {
+    var message = document.createElement('article');
+    message.setAttribute('class', 'message');
+    message.innerHTML = 'There are no results matching <strong>"' + keyword + '"</strong>, please edit your query.';
+    document.getElementById('results').appendChild(message);
+}
+
 function loadRecipe(recipe) {
     var recipeElement = document.createElement('article');
     recipeElement.setAttribute('class', 'result');
@@ -53,8 +64,12 @@ function loadRecipe(recipe) {
     link.setAttribute('href', recipe.link);
     link.innerHTML = recipe.title;
     title.appendChild(link);
+
+    var publishedAt = new Date(recipe.publishedAt);
+    var publishedOn = 'Published on ' + publishedAt.getMonthText() + " " + publishedAt.getDate() + " " + publishedAt.getFullYear();
     var author = document.createElement('h3');
-    author.innerHTML = recipe.author;
+    author.innerHTML = publishedOn + " by <strong>" + recipe.author + "</strong>";
+
     var imageContainer = document.createElement('div');
     imageContainer.setAttribute('class', 'image');
     var image = document.createElement('img');
@@ -101,7 +116,9 @@ function createPager() {
 }
 
 function goToPage(page) {
-    cleanResults();
+    cleanElementByClassName('result');
+    // enable previously active page in pager
+    // disable active page in pager
     var firstResult = page * 10;
     if ((page * 10) + 10 > recipes.length) {
         for (var recipe_i = firstResult; recipe_i < recipes.length; recipe_i++) {
@@ -114,8 +131,8 @@ function goToPage(page) {
     }
 }
 
-function cleanResults() {
-    var currentResults = document.getElementsByClassName('result');
+function cleanElementByClassName(className) {
+    var currentResults = document.getElementsByClassName(className);
     while (currentResults[0]) {
         currentResults[0].parentNode.removeChild(currentResults[0]);
     }
@@ -129,6 +146,11 @@ function cleanPager() {
     var pager = document.getElementById('pager');
     pager.innerHTML = '';
 }
+
+Date.prototype.getMonthText = function() {
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[this.getMonth()];
+};
 
 window.onload = function() {
     history.pushState({'action': 'home'}, '', '');
