@@ -18,7 +18,7 @@ function fetchResults(keyword) {
     cleanElementByClassName('message');
     cleanPager();
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:8080/recipes/' + keyword);
+    xhr.open('GET', 'http://veganrealm.net:8080/recipes/' + keyword);
     xhr.onload = function () {
         if (xhr.status === 200) {
             recipes = JSON.parse(xhr.responseText);
