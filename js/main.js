@@ -9,7 +9,7 @@ function actionHome() {
 
 function actionSearch() {
     var keyword = document.getElementById('keyword').value;
-    history.pushState({'action': 'search', 'keyword': keyword}, '', '');
+    history.pushState({'action': 'search', 'keyword': keyword}, '', '?query=' + keyword);
     fetchResults(keyword);
 }
 
@@ -153,19 +153,26 @@ Date.prototype.getMonthText = function() {
 };
 
 window.onload = function() {
-    history.pushState({'action': 'home'}, '', '');
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://veganrealm.net:8080/statistics/recipes-count');
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            var recipesCountElement = document.getElementById('recipes-count');
-            recipesCountElement.innerHTML = JSON.parse(xhr.responseText);
-        }
-        else {
-            alert('Request failed.  Returned status of ' + xhr.status);
-        }
-    };
-    xhr.send();
+    if (location.search === "") {
+        history.pushState({'action': 'home'}, '', '');
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://veganrealm.net:8080/statistics/recipes-count');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var recipesCountElement = document.getElementById('recipes-count');
+                recipesCountElement.innerHTML = JSON.parse(xhr.responseText);
+            }
+            else {
+                alert('Request failed.  Returned status of ' + xhr.status);
+            }
+        };
+        xhr.send();
+    } else {
+        var keyword = location.search.substring(1).split('=')[1];
+        document.getElementById('keyword').value = keyword;
+        history.pushState({'action': 'search', 'keyword': keyword}, '', '?query=' + keyword);
+        fetchResults(keyword);
+    }
 };
 
 window.addEventListener("popstate", function(e) {
@@ -178,6 +185,5 @@ window.addEventListener("popstate", function(e) {
             actionHome();
         }
     }
-
 
 });
