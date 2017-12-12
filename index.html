@@ -5,7 +5,7 @@
     <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     <title>Vegan Realm - Your friendly vegan resources search engine</title>
     <meta name="description" content="A hand-picked curated vegan resources search engine featuring all the best information there is on the web - recipes, health, clothing, travel, and more.">
-    <script src="js/main.js"></script>
+
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -23,8 +23,8 @@
     <h1><a href="index.html">Vegan Realm</a></h1>
 
     <form id="search">
-        <input type='text' id='keyword' onkeypress="handle(event)" />
-        <a id="search-button" hreaf="#" onclick="actionSearch();">Search The Realm</a>
+        <input type='text' id='keyword' />
+        <a id="search-button" href="#">Search The Realm</a>
     </form>
 
     <div id="results">
@@ -41,5 +41,6 @@
     </footer>
 
 </body>
+<script src="js/main.js"></script>
 
 </html>

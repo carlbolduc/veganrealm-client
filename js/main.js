@@ -7,6 +7,23 @@ function actionHome() {
     cleanPager();
 }
 
+document.getElementById('search-button').addEventListener('click', function () {
+    actionSearch();
+});
+
+document.getElementById('keyword').addEventListener('keypress', function (e) {
+    if (e.keyCode === 13) {
+        e.preventDefault();
+        actionSearch();
+    }
+});
+
+document.getElementById('pager').addEventListener('click', function(e) {
+    if (e.target.className === 'page') {
+        goToPage(parseInt(e.target.id.split('_')[1]) - 1);
+    }
+});
+
 function actionSearch() {
     var keyword = document.getElementById('keyword').value;
     history.pushState({'action': 'search', 'keyword': keyword}, '', '?query=' + keyword);
@@ -40,13 +57,6 @@ function fetchResults(keyword) {
         }
     };
     xhr.send();
-}
-
-function handle(e) {
-    if (e.keyCode === 13) {
-        e.preventDefault();
-        actionSearch();
-    }
 }
 
 function displayNoResultsMessage(keyword) {
@@ -104,8 +114,8 @@ function createPager() {
     for (var page_i = 0; page_i < pages; page_i++) {
         var pageElement = document.createElement('a');
         pageElement.setAttribute('class', 'page');
+        pageElement.setAttribute('id', 'page_' + (page_i + 1));
         pageElement.setAttribute('href', '#');
-        pageElement.setAttribute('onclick', 'goToPage(' + page_i + ')');
         pageElement.innerHTML = page_i + 1;
         document.getElementById('pager').appendChild(pageElement);
         if (page_i !== pages - 1) {
