@@ -31,7 +31,7 @@ requirejs(['app/utils', 'app/pager'], function(utils, pager) {
         xhr.send();
     } else {
         var keyword = location.search.substring(1).split('=')[1];
-        document.getElementById('keyword').value = keyword;
+        document.getElementById('keyword').value = decodeURIComponent(keyword);
         history.pushState({'action': 'search', 'keyword': keyword}, '', '?query=' + keyword);
         fetchResults(keyword);
     }
