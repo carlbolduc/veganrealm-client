@@ -32,6 +32,15 @@ define(['app/utils'], function (utils) {
                 }
                 utils.loadRecipe(recipes[recipe_i]);
             }
+        },
+
+        cleanPager: function () {
+            var currentPages = document.getElementsByClassName('page');
+            while (currentPages[0]) {
+                currentPages[0].parentNode.removeChild(currentPages[0]);
+            }
+            var pager = document.getElementById('pager');
+            pager.innerHTML = '';
         }
 
     };

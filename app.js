@@ -73,7 +73,7 @@ requirejs(['app/utils', 'app/pager'], function(utils, pager) {
         document.getElementById('keyword').value = '';
         utils.cleanElementByClassName('result');
         utils.cleanElementByClassName('message');
-        cleanPager();
+        pager.cleanPager();
     }
 
     function actionSearch() {
@@ -85,7 +85,7 @@ requirejs(['app/utils', 'app/pager'], function(utils, pager) {
     function fetchResults(keyword) {
         utils.cleanElementByClassName('result');
         utils.cleanElementByClassName('message');
-        cleanPager();
+        pager.cleanPager();
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://veganrealm.net:8080/recipes/' + keyword);
         xhr.onload = function () {
@@ -117,15 +117,6 @@ requirejs(['app/utils', 'app/pager'], function(utils, pager) {
         message.setAttribute('class', 'message');
         message.innerHTML = 'There are no results matching <strong>"' + keyword + '"</strong>, please edit your query.';
         document.getElementById('results').appendChild(message);
-    }
-
-    function cleanPager() {
-        var currentPages = document.getElementsByClassName('page');
-        while (currentPages[0]) {
-            currentPages[0].parentNode.removeChild(currentPages[0]);
-        }
-        var pager = document.getElementById('pager');
-        pager.innerHTML = '';
     }
 
     Date.prototype.getMonthText = function() {
