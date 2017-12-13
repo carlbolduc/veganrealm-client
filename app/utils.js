@@ -13,8 +13,18 @@ define(function () {
 
             var publishedAt = new Date(recipe.publishedAt);
             var publishedOn = publishedAt.getMonthText() + ' ' + publishedAt.getDate() + ', ' + publishedAt.getFullYear();
+
+            var authorLink = document.createElement('a');
+            var pathArray = recipe.link.split( '/' );
+            var protocol = pathArray[0];
+            var host = pathArray[2];
+            authorLink.setAttribute('href', protocol + '//' + host);
+            authorLink.innerHTML = '<strong>' + recipe.author + '</strong>';
+
             var author = document.createElement('h3');
-            author.innerHTML = 'Published by <strong>' + recipe.author + '</strong> on ' + publishedOn;
+            author.appendChild(document.createTextNode('Published by '));
+            author.appendChild(authorLink);
+            author.appendChild(document.createTextNode(' on ' + publishedOn));
 
             var imageContainer = document.createElement('div');
             imageContainer.setAttribute('class', 'image');

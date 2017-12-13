@@ -16,7 +16,7 @@ define(['app/utils'], function (utils) {
                 document.getElementById('pager').appendChild(pageElement);
                 if (page_i !== pages - 1) {
                     const pager = document.getElementById('pager');
-                    pager.innerHTML = pager.innerHTML + ' / ';
+                    pager.innerHTML = pager.innerHTML + ' &middot; ';
                 }
             }
         },
