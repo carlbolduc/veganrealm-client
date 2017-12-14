@@ -44,7 +44,8 @@ requirejs(['app/pager', 'app/service', 'app/steward', 'app/utils'], function (pa
         fetchResults(keyword, page)
     }
 
-    document.getElementById('search-button').addEventListener('click', function () {
+    document.getElementById('search-button').addEventListener('click', function (e) {
+        e.preventDefault();
         actionSearch();
     });
 
