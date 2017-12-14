@@ -12,23 +12,15 @@ requirejs.config({
 
 // Start loading the main app file. Put all of
 // your application logic in there.
-requirejs(['app/utils', 'app/pager'], function(utils, pager) {
-    var recipes = {};
+requirejs(['app/pager', 'app/recipes', 'app/service', 'app/utils'], function (pager, recipes, service, utils) {
+    var results = {};
 
     if (location.search === "") {
         history.pushState({'action': 'home'}, '', '');
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://veganrealm.net:8080/statistics/recipes-count');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var recipesCountElement = document.getElementById('recipes-count');
-                recipesCountElement.innerHTML = JSON.parse(xhr.responseText);
-            }
-            else {
-                alert('Request failed.  Returned status of ' + xhr.status);
-            }
-        };
-        xhr.send();
+        service.getRecipesCount(function (serverData) {
+            var recipesCountElement = document.getElementById('recipes-count');
+            recipesCountElement.innerHTML = serverData;
+        });
     } else {
         var keyword = location.search.substring(1).split('=')[1];
         document.getElementById('keyword').value = decodeURIComponent(keyword);
@@ -36,7 +28,7 @@ requirejs(['app/utils', 'app/pager'], function(utils, pager) {
         fetchResults(keyword);
     }
 
-    window.addEventListener("popstate", function(e) {
+    window.addEventListener("popstate", function (e) {
         if (e.state !== null) {
             if (e.state.action === 'search') {
                 document.getElementById('keyword').value = e.state.keyword;
@@ -58,22 +50,20 @@ requirejs(['app/utils', 'app/pager'], function(utils, pager) {
         }
     });
 
-    document.getElementById('pager').addEventListener('click', function(e) {
+    document.getElementById('pager').addEventListener('click', function (e) {
         if (e.target.className === 'page') {
             var previousPage = document.getElementsByClassName('page active');
             if (previousPage.length > 0) {
                 previousPage[0].classList.remove('active');
             }
             e.target.className = e.target.className + ' active';
-            pager.goToPage(recipes, parseInt(e.target.textContent) - 1);
+            pager.goToPage(results, parseInt(e.target.textContent) - 1);
         }
     });
 
     function actionHome() {
         document.getElementById('keyword').value = '';
-        utils.cleanElementByClassName('result');
-        utils.cleanElementByClassName('message');
-        pager.cleanPager();
+        houseKeeping();
     }
 
     function actionSearch() {
@@ -83,45 +73,29 @@ requirejs(['app/utils', 'app/pager'], function(utils, pager) {
     }
 
     function fetchResults(keyword) {
-        utils.cleanElementByClassName('result');
-        utils.cleanElementByClassName('message');
-        pager.cleanPager();
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://veganrealm.net:8080/recipes/' + keyword);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                recipes = JSON.parse(xhr.responseText);
-                if (recipes.length === 0) {
-                    displayNoResultsMessage(keyword);
-                } else {
-                    for (var recipe_i = 0; recipe_i < recipes.length; recipe_i++) {
-                        if (recipes.length > 10) {
-                            if (recipe_i === 10) {
-                                pager.createPager(recipes);
-                                break;
-                            }
+        houseKeeping();
+        service.fetchResults(keyword, function (serverData) {
+            results = serverData;
+            if (results.length === 0) {
+                utils.displayNoResultsMessage(keyword);
+            } else {
+                for (var recipe_i = 0; recipe_i < results.length; recipe_i++) {
+                    if (results.length > 10) {
+                        if (recipe_i === 10) {
+                            pager.createPager(results);
+                            break;
                         }
-                        utils.loadRecipe(recipes[recipe_i]);
                     }
+                    recipes.buildRecipeResult(results[recipe_i]);
                 }
             }
-            else {
-                alert('Request failed.  Returned status of ' + xhr.status);
-            }
-        };
-        xhr.send();
+        });
     }
 
-    function displayNoResultsMessage(keyword) {
-        var message = document.createElement('article');
-        message.setAttribute('class', 'message');
-        message.innerHTML = 'There are no results matching <strong>"' + keyword + '"</strong>, please edit your query.';
-        document.getElementById('results').appendChild(message);
+    function houseKeeping() {
+        utils.cleanElementByClassName('result');
+        utils.cleanElementByClassName('message');
+        utils.cleanElementByClassName('page');
     }
-
-    Date.prototype.getMonthText = function() {
-        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return months[this.getMonth()];
-    };
 
 });

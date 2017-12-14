@@ -1,46 +1,38 @@
-define(['app/utils'], function (utils) {
+define(['app/recipes', 'app/utils'], function (recipes, utils) {
 
     return {
 
-        createPager: function (recipes) {
-            var pages = Math.ceil(recipes.length / 10);
-            for (var page_i = 0; page_i < pages; page_i++) {
+        createPager: function (results) {
+            var pages = Math.ceil(results.length / 10);
+            for (var i = 0; i < pages; i++) {
                 var pageElement = document.createElement('a');
-                if (page_i === 0) {
+                if (i === 0) {
                     pageElement.setAttribute('class', 'page active');
                 } else {
                     pageElement.setAttribute('class', 'page');
                 }
                 pageElement.setAttribute('href', '#');
-                pageElement.innerHTML = page_i + 1;
+                pageElement.innerHTML = i + 1;
                 document.getElementById('pager').appendChild(pageElement);
-                if (page_i !== pages - 1) {
-                    const pager = document.getElementById('pager');
+                if (i !== pages - 1) {
+                    var pager = document.getElementById('pager');
                     pager.innerHTML = pager.innerHTML + ' &middot; ';
                 }
             }
         },
 
-        goToPage: function (recipes, page) {
+        goToPage: function (results, page) {
             utils.cleanElementByClassName('result');
             var firstResult = page * 10;
-            for (var recipe_i = firstResult; recipe_i < recipes.length; recipe_i++) {
-                if ((page * 10) + 10 <= recipes.length) {
-                    if (recipe_i === firstResult + 10) {
+            for (var i = firstResult; i < results.length; i++) {
+                if ((page * 10) + 10 <= results.length) {
+                    if (i === firstResult + 10) {
                         break;
                     }
                 }
-                utils.loadRecipe(recipes[recipe_i]);
+                // TODO add results module that test the result type and load the appropriate template
+                recipes.buildRecipeResult(results[i]);
             }
-        },
-
-        cleanPager: function () {
-            var currentPages = document.getElementsByClassName('page');
-            while (currentPages[0]) {
-                currentPages[0].parentNode.removeChild(currentPages[0]);
-            }
-            var pager = document.getElementById('pager');
-            pager.innerHTML = '';
         }
 
     };
