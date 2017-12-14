@@ -15,6 +15,17 @@ requirejs.config({
 requirejs(['app/pager', 'app/service', 'app/steward', 'app/utils'], function (pager, service, steward, utils) {
     var results = {};
 
+    window.addEventListener("popstate", function (e) {
+        if (e.state !== null) {
+            if (e.state.action === 'search') {
+                document.getElementById('keyword').value = e.state.keyword;
+                fetchResults(e.state.keyword, e.state.page)
+            } else if (e.state.action === 'home') {
+                actionHome();
+            }
+        }
+    });
+
     if (location.search === "") {
         history.pushState({'action': 'home'}, '', '');
         service.getRecipesCount(function (serverData) {
@@ -22,22 +33,16 @@ requirejs(['app/pager', 'app/service', 'app/steward', 'app/utils'], function (pa
             recipesCountElement.innerHTML = serverData;
         });
     } else {
-        var keyword = location.search.substring(1).split('=')[1];
-        document.getElementById('keyword').value = decodeURIComponent(keyword);
-        history.pushState({'action': 'search', 'keyword': keyword}, '', '?query=' + keyword);
-        fetchResults(keyword);
+        var keyword = decodeURIComponent(utils.getParameter('query'));
+        var page = utils.getParameter('page') === null ? 1 : parseInt(utils.getParameter('page'));
+        document.getElementById('keyword').value = keyword;
+        history.pushState({
+            'action': 'search',
+            'keyword': keyword,
+            'page': page
+        }, '', '?query=' + encodeURI(keyword) + '&page=' + page);
+        fetchResults(keyword, page)
     }
-
-    window.addEventListener("popstate", function (e) {
-        if (e.state !== null) {
-            if (e.state.action === 'search') {
-                document.getElementById('keyword').value = e.state.keyword;
-                fetchResults(e.state.keyword)
-            } else if (e.state.action === 'home') {
-                actionHome();
-            }
-        }
-    });
 
     document.getElementById('search-button').addEventListener('click', function () {
         actionSearch();
@@ -52,12 +57,15 @@ requirejs(['app/pager', 'app/service', 'app/steward', 'app/utils'], function (pa
 
     document.getElementById('pager').addEventListener('click', function (e) {
         if (e.target.className === 'page') {
-            var previousPage = document.getElementsByClassName('page active');
-            if (previousPage.length > 0) {
-                previousPage[0].classList.remove('active');
-            }
-            e.target.className = e.target.className + ' active';
-            pager.goToPage(results, parseInt(e.target.textContent) - 1);
+            e.preventDefault();
+            var keyword = decodeURI(utils.getParameter('query'));
+            var page = parseInt(e.target.textContent);
+            history.pushState({
+                'action': 'search',
+                'keyword': keyword,
+                'page': page
+            }, '', '?query=' + encodeURI(keyword) + '&page=' + page);
+            pager.goToPage(results, page);
         }
     });
 
@@ -68,26 +76,23 @@ requirejs(['app/pager', 'app/service', 'app/steward', 'app/utils'], function (pa
 
     function actionSearch() {
         var keyword = document.getElementById('keyword').value;
-        history.pushState({'action': 'search', 'keyword': keyword}, '', '?query=' + keyword);
-        fetchResults(keyword);
+        history.pushState({'action': 'search', 'keyword': keyword, 'page': 1}, '', '?query=' + encodeURI(keyword) + '&page=1');
+        fetchResults(keyword, 1);
     }
 
-    function fetchResults(keyword) {
+    function fetchResults(keyword, page) {
         houseKeeping();
         service.fetchResults(keyword, function (serverData) {
             results = serverData;
             if (results.length === 0) {
                 utils.displayNoResultsMessage(keyword);
-            } else {
+            } else if (results.length < 11) {
                 for (var i = 0; i < results.length; i++) {
-                    if (results.length > 10) {
-                        if (i === 10) {
-                            pager.createPager(results);
-                            break;
-                        }
-                    }
                     steward.buildAndLoadResult(results[i]);
                 }
+            } else {
+                pager.createPager(results);
+                pager.goToPage(results, page);
             }
         });
     }

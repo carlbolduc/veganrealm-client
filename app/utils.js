@@ -25,6 +25,24 @@ define(function () {
             message.setAttribute('class', 'message');
             message.innerHTML = 'There are no results matching <strong>"' + keyword + '"</strong>, please edit your query.';
             document.getElementById('results').appendChild(message);
+        },
+
+        getParameter: function (paramName) {
+            var searchString = location.search.substring(1),
+                i, val, params = searchString.split("&");
+
+            for (i = 0; i < params.length; i++) {
+                val = params[i].split("=");
+                if (val[0] === paramName) {
+                    return val[1];
+                }
+            }
+            return null;
+        },
+
+        scrollToTop: function () {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         }
 
     };
