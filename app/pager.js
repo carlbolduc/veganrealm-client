@@ -1,4 +1,4 @@
-define(['app/recipes', 'app/utils'], function (recipes, utils) {
+define(['app/steward', 'app/utils'], function (steward, utils) {
 
     return {
 
@@ -30,8 +30,7 @@ define(['app/recipes', 'app/utils'], function (recipes, utils) {
                         break;
                     }
                 }
-                // TODO add results module that test the result type and load the appropriate template
-                recipes.buildRecipeResult(results[i]);
+                steward.buildAndLoadResult(results[i]);
             }
         }
 

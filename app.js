@@ -12,7 +12,7 @@ requirejs.config({
 
 // Start loading the main app file. Put all of
 // your application logic in there.
-requirejs(['app/pager', 'app/recipes', 'app/service', 'app/utils'], function (pager, recipes, service, utils) {
+requirejs(['app/pager', 'app/service', 'app/steward', 'app/utils'], function (pager, service, steward, utils) {
     var results = {};
 
     if (location.search === "") {
@@ -79,14 +79,14 @@ requirejs(['app/pager', 'app/recipes', 'app/service', 'app/utils'], function (pa
             if (results.length === 0) {
                 utils.displayNoResultsMessage(keyword);
             } else {
-                for (var recipe_i = 0; recipe_i < results.length; recipe_i++) {
+                for (var i = 0; i < results.length; i++) {
                     if (results.length > 10) {
-                        if (recipe_i === 10) {
+                        if (i === 10) {
                             pager.createPager(results);
                             break;
                         }
                     }
-                    recipes.buildRecipeResult(results[recipe_i]);
+                    steward.buildAndLoadResult(results[i]);
                 }
             }
         });

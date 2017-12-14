@@ -2,13 +2,17 @@ define(['app/utils'], function (utils) {
 
     return {
 
-        buildRecipeResult: function(recipeData) {
+        buildAndLoadRecipe: function(recipeData) {
+
             var recipe = document.createElement('article');
             recipe.setAttribute('class', 'result');
+
             var title = document.createElement('h2');
+
             var link = document.createElement('a');
             link.setAttribute('href', recipeData.link);
             link.innerHTML = recipeData.title;
+
             title.appendChild(link);
 
             var publishedAt = new utils.Date(recipeData.publishedAt);
@@ -31,6 +35,7 @@ define(['app/utils'], function (utils) {
             var image = document.createElement('img');
             image.src = recipeData.imageLink;
             imageContainer.appendChild(image);
+
             var ingredientsContainer = document.createElement('div');
             ingredientsContainer.setAttribute('class', 'ingredients');
             if (recipeData.ingredients.length > 0) {
@@ -48,11 +53,14 @@ define(['app/utils'], function (utils) {
             } else {
                 ingredientsContainer.innerHTML = "See ingredients in the original recipe.";
             }
+
             recipe.appendChild(title);
             recipe.appendChild(author);
             recipe.appendChild(imageContainer);
             recipe.appendChild(ingredientsContainer);
+
             document.getElementById('results').appendChild(recipe);
+
         }
 
     };
