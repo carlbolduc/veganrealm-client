@@ -42,7 +42,7 @@ define(['app/utils'], function (utils) {
             if (recipeData.ingredients.indexOf("|") !== -1) {
               recipeIngredients = recipeData.ingredients.split("|");
             }
-            if (recipeIngredients > 0) {
+            if (recipeIngredients.length > 0) {
                   var ingredients = document.createElement('ul');
                   for (var ingredient_i = 0; ingredient_i < recipeIngredients.length; ingredient_i++) {
                       var ingredient = document.createElement('li');
