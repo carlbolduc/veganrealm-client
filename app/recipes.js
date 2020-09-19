@@ -38,18 +38,18 @@ define(['app/utils'], function (utils) {
 
             var ingredientsContainer = document.createElement('div');
             ingredientsContainer.setAttribute('class', 'ingredients');
-            if (recipeData.ingredients.length > 0) {
-                if (recipeData.ingredients.length === 1 && recipeData.ingredients[0] === "") {
-                    ingredientsContainer.innerHTML = "See ingredients in the original recipe.";
-                } else {
-                    var ingredients = document.createElement('ul');
-                    for (var ingredient_i = 0; ingredient_i < recipeData.ingredients.length; ingredient_i++) {
-                        var ingredient = document.createElement('li');
-                        ingredient.innerHTML = recipeData.ingredients[ingredient_i];
-                        ingredients.appendChild(ingredient);
-                    }
-                    ingredientsContainer.appendChild(ingredients);
-                }
+            var recipeIngredients = [];
+            if (recipeData.ingredients.indexOf("|") !== -1) {
+              recipeIngredients = recipeData.ingredients.split("|");
+            }
+            if (recipeIngredients > 0) {
+                  var ingredients = document.createElement('ul');
+                  for (var ingredient_i = 0; ingredient_i < recipeIngredients.length; ingredient_i++) {
+                      var ingredient = document.createElement('li');
+                      ingredient.innerHTML = recipeIngredients[ingredient_i];
+                      ingredients.appendChild(ingredient);
+                  }
+                  ingredientsContainer.appendChild(ingredients);
             } else {
                 ingredientsContainer.innerHTML = "See ingredients in the original recipe.";
             }
