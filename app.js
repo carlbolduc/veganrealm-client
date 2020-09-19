@@ -91,7 +91,7 @@ requirejs(['domReady', 'app/pager', 'app/service', 'app/steward', 'app/utils'], 
     function fetchResults(keyword, page) {
         houseKeeping();
         service.fetchResults(keyword, function (serverData) {
-            results = serverData;
+            results = serverData.recipes;
             if (results.length === 0) {
                 utils.displayNoResultsMessage(keyword);
             } else if (results.length < 11) {
